@@ -45,7 +45,7 @@ const App = (): JSX.Element => {
     })
   }, [])
 
-  const stackHeight = chamberTotal * SEAT_TO_PIXEL
+  const stackHeight = chamberTotal * SEAT_TO_PIXEL * 0.6
 
   const groupsWithLayout = groups.map((group) => {
     const segments: SegmentLayout[] = group.parties.map((party) => ({
