@@ -209,8 +209,15 @@ const App = () => {
     // Check if over.id is a group ID
     const overAsGroup = storeGroups.find((g) => g.id === over.id)
     if (overAsGroup) {
-      // Dropped on empty area of a group - add to the beginning (top)
-      if (activeGroup.id !== overAsGroup.id) {
+      if (activeGroup.id === overAsGroup.id) {
+        // Same group - move to top
+        const oldIndex = activeGroup.partyIds.indexOf(activeId)
+        const newPartyIds = [...activeGroup.partyIds]
+        newPartyIds.splice(oldIndex, 1)
+        newPartyIds.unshift(activeId)
+        reorderPartiesInGroup(activeGroup.id, newPartyIds)
+      } else {
+        // Different group - move to the beginning (top)
         movePartyToGroup(activeId, activeGroup.id, overAsGroup.id, 0)
       }
       return
