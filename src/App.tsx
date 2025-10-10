@@ -207,8 +207,9 @@ const App = (): JSX.Element => {
                               y1={segment.centerFromTop}
                               x2="12"
                               y2={tooltipCenter}
-                              stroke="rgba(17, 24, 39, 0.5)"
+                              stroke={segment.party.color}
                               strokeWidth="1.5"
+                              strokeOpacity="0.6"
                             />
                           )
                         })}
@@ -225,6 +226,7 @@ const App = (): JSX.Element => {
                             key={`${group.id}-${segment.party.id}-tooltip`}
                             style={{
                               top: `${segment.tooltipTop}px`,
+                              backgroundColor: segment.party.color,
                             } as CSSProperties}
                           >
                             <span className="tooltip__name">{segment.party.shortName}</span>
