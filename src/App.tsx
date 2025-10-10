@@ -41,10 +41,18 @@ const TOOLTIP_HEIGHT = 20
 const TOOLTIP_SPACING = 4
 
 // Modifier to offset drag overlay above finger/cursor for compact parties
-const offsetAboveModifier: Modifier = ({ transform }) => ({
-  ...transform,
-  y: transform.y - 60,
-})
+const offsetAboveModifier: Modifier = ({ transform, draggingNodeRect }) => {
+  // ツールチップの位置は右側なので、left値が大きい
+  const isDraggingFromTooltip = draggingNodeRect && draggingNodeRect.left > 100
+
+  // ツールチップからドラッグした場合は左にオフセット
+  return {
+    x: isDraggingFromTooltip ? transform.x - 75 : transform.x,
+    y: transform.y - 60,
+    scaleX: 1,
+    scaleY: 1,
+  }
+}
 
 const App = () => {
   const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup } = useChartStore()
