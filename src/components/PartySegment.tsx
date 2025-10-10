@@ -16,10 +16,12 @@ export const PartySegment = ({ party, height, isCompact }: PartySegmentProps) =>
 
   const style: CSSProperties = {
     height: `${height}px`,
+    minHeight: `${height}px`,
+    maxHeight: `${height}px`,
     backgroundColor: party.color,
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.2 : 1,
     cursor: isDragging ? 'grabbing' : 'grab',
   }
 

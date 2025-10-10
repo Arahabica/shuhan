@@ -237,7 +237,7 @@ const App = () => {
           className="chart__segment"
           style={{
             width: '60px',
-            height: `${activeParty.seats * SEAT_TO_PIXEL * 0.6}px`,
+            height: `${activeParty.seats * SEAT_TO_PIXEL}px`,
             backgroundColor: activeParty.color,
             opacity: 0.9,
           }}
