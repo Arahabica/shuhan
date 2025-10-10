@@ -68,7 +68,9 @@ const App = () => {
     })
   }, [storeGroups])
 
-  const stackHeight = chamberTotal * SEAT_TO_PIXEL * 0.6
+  const maxGroupSeats = Math.max(...groups.map((g) => g.totalSeats))
+  const minHeight = chamberTotal * SEAT_TO_PIXEL * 0.62
+  const stackHeight = Math.max(maxGroupSeats * SEAT_TO_PIXEL, minHeight)
 
   const groupsWithLayout = groups.map((group) => {
     const segments: SegmentLayout[] = group.parties.map((party) => ({
