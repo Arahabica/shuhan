@@ -8,6 +8,7 @@ import {
   type DragEndEvent,
   type DragOverEvent,
   type DragStartEvent,
+  type Modifier,
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import {
@@ -38,6 +39,12 @@ interface SegmentLayout {
 const SEAT_TO_PIXEL = 1.4
 const TOOLTIP_HEIGHT = 20
 const TOOLTIP_SPACING = 4
+
+// Modifier to offset drag overlay above finger/cursor for compact parties
+const offsetAboveModifier: Modifier = ({ transform }) => ({
+  ...transform,
+  y: transform.y - 60,
+})
 
 const App = () => {
   const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup } = useChartStore()
@@ -231,13 +238,13 @@ const App = () => {
       </div>
     </div>
 
-    <DragOverlay>
+    <DragOverlay modifiers={activeParty && activeParty.seats <= 20 ? [offsetAboveModifier] : []}>
       {activeParty ? (
         <div
           className="chart__segment"
           style={{
             width: '60px',
-            height: `${activeParty.seats * SEAT_TO_PIXEL}px`,
+            height: activeParty.seats <= 20 ? '30px' : `${activeParty.seats * SEAT_TO_PIXEL}px`,
             backgroundColor: activeParty.color,
             opacity: 0.9,
           }}
