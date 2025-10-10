@@ -1,4 +1,4 @@
-// Data source: NHK 2024年10月27日衆議院総選挙結果 (確認日: 2025-10-10)
+// Data source: 衆議院会派別所属議員数 (確認日: 2025-10-11)
 export const chamberTotal = 465 as const
 export const majorityThreshold = 233 as const
 
@@ -13,6 +13,8 @@ export type PartyId =
   | 'sdp'
   | 'sanseito'
   | 'japan-conservative'
+  | 'yuushi-kaikaku'
+  | 'genzei'
   | 'independent'
 
 export type GroupId = 'ruling' | 'opposition' | 'others'
@@ -36,7 +38,7 @@ export const parties = [
     id: 'ldp',
     name: '自由民主党',
     shortName: '自民',
-    seats: 191,
+    seats: 196,
     color: '#E60026',
   },
   {
@@ -50,21 +52,21 @@ export const parties = [
     id: 'cdp',
     name: '立憲民主党',
     shortName: '立民',
-    seats: 148,
+    seats: 147,
     color: '#004098',
   },
   {
     id: 'ishin',
     name: '日本維新の会',
     shortName: '維新',
-    seats: 38,
+    seats: 35,
     color: '#6DB33F',
   },
   {
     id: 'dpp',
     name: '国民民主党',
     shortName: '国民',
-    seats: 28,
+    seats: 27,
     color: '#00418B',
   },
   {
@@ -99,14 +101,28 @@ export const parties = [
     id: 'japan-conservative',
     name: '日本保守党',
     shortName: '保守',
-    seats: 3,
+    seats: 1,
     color: '#0F3B63',
+  },
+  {
+    id: 'yuushi-kaikaku',
+    name: '有志・改革の会',
+    shortName: '有志',
+    seats: 7,
+    color: '#00A0E9',
+  },
+  {
+    id: 'genzei',
+    name: '減税保守こども',
+    shortName: '減税',
+    seats: 2,
+    color: '#9B7CB6',
   },
   {
     id: 'independent',
     name: '無所属',
     shortName: '無',
-    seats: 12,
+    seats: 5,
     color: '#666666',
   },
 ] satisfies Party[]
@@ -125,6 +141,6 @@ export const initialGroups = [
   {
     id: 'others',
     name: 'その他',
-    partyIds: ['komeito', 'ishin', 'dpp', 'reiwa', 'sanseito', 'japan-conservative', 'independent'],
+    partyIds: ['komeito', 'ishin', 'dpp', 'reiwa', 'sanseito', 'japan-conservative', 'yuushi-kaikaku', 'genzei', 'independent'],
   },
 ] satisfies Group[]
