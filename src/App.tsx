@@ -171,6 +171,23 @@ const App = () => {
   const rulingSeats = groups.find((group) => group.id === 'ruling')?.totalSeats ?? 0
   const oppositionSeats = groups.find((group) => group.id === 'opposition')?.totalSeats ?? 0
 
+  // 政権名を生成
+  const rulingGroup = groups.find((group) => group.id === 'ruling')
+  const administrationName = useMemo(() => {
+    if (!rulingGroup || rulingGroup.parties.length === 0) return ''
+
+    if (rulingGroup.parties.length === 1) {
+      return `${rulingGroup.parties[0].shortName}単独政権`
+    }
+
+    const initials = rulingGroup.parties
+      .slice()
+      .reverse()
+      .map((party) => party.shortName.charAt(0))
+      .join('')
+    return `${initials}政権`
+  }, [rulingGroup])
+
   // 与党と野党の議席数を監視し、逆転したらアニメーションをトリガー
   useEffect(() => {
     if (swapState === 'idle' && oppositionSeats > rulingSeats) {
@@ -283,6 +300,7 @@ const App = () => {
           <header className="app__header">
             <div className="header__titles">
               <h1 className="header__headline">首班指名シミュレータ</h1>
+              {administrationName && <p className="header__administration">{administrationName}</p>}
             </div>
           </header>
 

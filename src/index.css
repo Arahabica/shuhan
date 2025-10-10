@@ -87,6 +87,13 @@ body {
   font-weight: 700;
 }
 
+.header__administration {
+  margin: 4px 0 0 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
 .app__main {
   flex: 1;
   padding: 20px var(--app-padding) 24px;
