@@ -213,6 +213,13 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 0.7rem;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.chart__tooltip:active {
+  cursor: grabbing;
 }
 
 

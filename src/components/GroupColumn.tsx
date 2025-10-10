@@ -1,9 +1,9 @@
 import { Fragment } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import type { CSSProperties } from 'react'
 import type { Party, GroupId, PartyId } from '../data/parties'
 import { PartySegment } from './PartySegment'
+import { PartyTooltip } from './PartyTooltip'
 
 const SEAT_TO_PIXEL = 1.4
 
@@ -104,8 +104,8 @@ export const GroupColumn = ({
           </SortableContext>
         </div>
 
-        <div className="chart__stackColumn chart__stackColumn--tooltip" aria-hidden="true">
-          <svg className="chart__connector" width="100%" height={stackHeight}>
+        <div className="chart__stackColumn chart__stackColumn--tooltip">
+          <svg className="chart__connector" width="100%" height={stackHeight} aria-hidden="true">
             {segments
               .filter((segment) => segment.isCompact && segment.tooltipTop != null)
               .map((segment) => {
@@ -129,17 +129,11 @@ export const GroupColumn = ({
             {segments
               .filter((segment) => segment.isCompact && segment.tooltipTop != null)
               .map((segment) => (
-                <div
-                  className="chart__tooltip"
+                <PartyTooltip
                   key={`${groupId}-${segment.party.id}-tooltip`}
-                  style={{
-                    top: `${segment.tooltipTop}px`,
-                    backgroundColor: segment.party.color,
-                  } as CSSProperties}
-                >
-                  <span className="tooltip__name">{segment.party.shortName}</span>
-                  <span className="tooltip__seats">{segment.party.seats}</span>
-                </div>
+                  party={segment.party}
+                  top={segment.tooltipTop!}
+                />
               ))}
           </div>
         </div>
