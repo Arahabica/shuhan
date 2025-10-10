@@ -40,24 +40,25 @@ const SEAT_TO_PIXEL = 1.4
 const TOOLTIP_HEIGHT = 20
 const TOOLTIP_SPACING = 4
 
-// Modifier to offset drag overlay above finger/cursor for compact parties
-const offsetAboveModifier: Modifier = ({ transform, draggingNodeRect }) => {
-  // ツールチップの位置は右側なので、left値が大きい
-  const isDraggingFromTooltip = draggingNodeRect && draggingNodeRect.left > 100
-
-  // ツールチップからドラッグした場合は左にオフセット
-  return {
-    x: isDraggingFromTooltip ? transform.x - 75 : transform.x,
-    y: transform.y - 60,
-    scaleX: 1,
-    scaleY: 1,
-  }
-}
-
 const App = () => {
   const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup } = useChartStore()
   const [activeId, setActiveId] = useState<PartyId | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
+  const [isDraggingFromTooltip, setIsDraggingFromTooltip] = useState<boolean>(false)
+
+  // Modifier to offset drag overlay above finger/cursor for compact parties
+  const offsetAboveModifier: Modifier = useMemo(
+    () =>
+      ({ transform }) => {
+        return {
+          x: isDraggingFromTooltip ? transform.x : transform.x - 75,
+          y: transform.y - 60,
+          scaleX: 1,
+          scaleY: 1,
+        }
+      },
+    [isDraggingFromTooltip],
+  )
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -168,6 +169,26 @@ const App = () => {
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as PartyId)
+
+    // ドラッグ開始時の要素を確認して、ツールチップかバーかを判定
+    const target = event.activatorEvent?.target as HTMLElement
+    let element: HTMLElement | null = target
+    let isFromTooltip = false
+
+    // 親要素を最大5階層まで遡ってクラス名を確認
+    for (let i = 0; i < 5 && element; i++) {
+      if (element.classList?.contains('chart__tooltip')) {
+        isFromTooltip = true
+        break
+      }
+      if (element.classList?.contains('chart__segment')) {
+        isFromTooltip = false
+        break
+      }
+      element = element.parentElement
+    }
+
+    setIsDraggingFromTooltip(isFromTooltip)
   }
 
   const handleDragOver = (event: DragOverEvent) => {
