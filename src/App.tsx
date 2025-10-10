@@ -6,6 +6,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragOverEvent,
   type DragStartEvent,
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
@@ -41,6 +42,7 @@ const TOOLTIP_SPACING = 4
 const App = () => {
   const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup } = useChartStore()
   const [activeId, setActiveId] = useState<PartyId | null>(null)
+  const [overId, setOverId] = useState<string | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -153,9 +155,14 @@ const App = () => {
     setActiveId(event.active.id as PartyId)
   }
 
+  const handleDragOver = (event: DragOverEvent) => {
+    setOverId(event.over?.id?.toString() ?? null)
+  }
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     setActiveId(null)
+    setOverId(null)
 
     if (!over || active.id === over.id) return
 
@@ -191,10 +198,10 @@ const App = () => {
     }
   }
 
-  const activeParty = activeId ? parties.find((p) => p.id === activeId) : null
+  const activeParty = activeId ? parties.find((p) => p.id === activeId) ?? null : null
 
   return (
-    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
       <div className="app">
         <div className="app__shell">
           <header className="app__header">
@@ -215,6 +222,8 @@ const App = () => {
                   segments={group.segments}
                   stackHeight={stackHeight}
                   tooltipHeight={TOOLTIP_HEIGHT}
+                  activeParty={activeParty}
+                  overPartyId={overId}
                 />
               ))}
             </section>
