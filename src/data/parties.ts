@@ -136,7 +136,7 @@ export const initialGroups = [
   {
     id: 'opposition',
     name: '野党',
-    partyIds: ['cdp', 'jcp', 'sdp'],
+    partyIds: ['sdp', 'jcp', 'cdp'],
   },
   {
     id: 'others',

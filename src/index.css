@@ -265,3 +265,39 @@ body {
   border: 0;
 }
 
+.share-section {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+}
+
+.share-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.share-button:hover {
+  background: #1a1a1a;
+}
+
+.share-button:active {
+  background: #000000;
+  transform: scale(0.98);
+}
+
+.share-button__icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
