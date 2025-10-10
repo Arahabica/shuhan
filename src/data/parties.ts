@@ -2,6 +2,10 @@
 export const chamberTotal = 465 as const
 export const majorityThreshold = 233 as const
 
+// 参議院
+export const councillorsTotal = 248 as const
+export const councillorsMajority = 125 as const
+
 export type PartyId =
   | 'ldp'
   | 'kome'
@@ -16,6 +20,7 @@ export type PartyId =
   | 'yuu'
   | 'gen'
   | 'mu'
+  | 'okinawa'
 
 export type GroupId = 'ruling' | 'opposition' | 'others'
 
@@ -142,5 +147,111 @@ export const initialGroups = [
     id: 'others',
     name: 'その他',
     partyIds: ['kome', 'ishi', 'dpp', 'rei', 'san', 'hoshu', 'yuu', 'gen', 'mu'],
+  },
+] satisfies Group[]
+
+// 参議院の政党データ
+export const councillorParties = [
+  {
+    id: 'ldp',
+    name: '自由民主党',
+    shortName: '自民',
+    seats: 100,
+    color: '#E60026',
+  },
+  {
+    id: 'cdp',
+    name: '立憲民主党',
+    shortName: '立民',
+    seats: 41,
+    color: '#004098',
+  },
+  {
+    id: 'sdp',
+    name: '社会民主党',
+    shortName: '社民',
+    seats: 1,
+    color: '#1B62B9',
+  },
+  {
+    id: 'dpp',
+    name: '国民民主党',
+    shortName: '国民',
+    seats: 25,
+    color: '#00418B',
+  },
+  {
+    id: 'kome',
+    name: '公明党',
+    shortName: '公明',
+    seats: 21,
+    color: '#F8B500',
+  },
+  {
+    id: 'ishi',
+    name: '日本維新の会',
+    shortName: '維新',
+    seats: 19,
+    color: '#6DB33F',
+  },
+  {
+    id: 'san',
+    name: '参政党',
+    shortName: '参政',
+    seats: 15,
+    color: '#F37021',
+  },
+  {
+    id: 'jcp',
+    name: '日本共産党',
+    shortName: '共産',
+    seats: 7,
+    color: '#E60012',
+  },
+  {
+    id: 'rei',
+    name: 'れいわ新選組',
+    shortName: 'れいわ',
+    seats: 6,
+    color: '#FF0080',
+  },
+  {
+    id: 'hoshu',
+    name: '日本保守党',
+    shortName: '保守',
+    seats: 2,
+    color: '#0F3B63',
+  },
+  {
+    id: 'okinawa',
+    name: '沖縄の風',
+    shortName: '沖縄',
+    seats: 2,
+    color: '#2ecc71',
+  },
+  {
+    id: 'mu',
+    name: '各派に属しない議員',
+    shortName: '無',
+    seats: 9,
+    color: '#666666',
+  },
+] satisfies Party[]
+
+export const councillorInitialGroups = [
+  {
+    id: 'ruling',
+    name: '与党',
+    partyIds: ['ldp'],
+  },
+  {
+    id: 'opposition',
+    name: '野党',
+    partyIds: ['sdp', 'jcp', 'cdp'],
+  },
+  {
+    id: 'others',
+    name: 'その他',
+    partyIds: ['kome', 'ishi', 'dpp', 'rei', 'san', 'hoshu', 'okinawa', 'mu'],
   },
 ] satisfies Group[]

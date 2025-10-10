@@ -21,6 +21,7 @@ import {
 } from './data/parties'
 import { useChartStore } from './store/useChartStore'
 import { GroupColumn } from './components/GroupColumn'
+import { CouncillorChart } from './components/CouncillorChart'
 
 interface GroupWithParties extends Group {
   parties: Party[]
@@ -435,6 +436,8 @@ const App = () => {
                 結果をシェア
               </button>
             </div>
+
+            <CouncillorChart />
           </main>
 
           <footer className="app__footer">

@@ -344,3 +344,50 @@ body {
   text-decoration: underline;
 }
 
+.councillor-chart {
+  margin-top: 48px;
+  padding: 0 var(--app-padding);
+}
+
+.councillor-chart__title {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.councillor-chart__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.councillor-chart__label {
+  flex: 0 0 40px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.councillor-chart__bar {
+  flex: 1;
+  height: 20px;
+  display: flex;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.councillor-chart__segment {
+  height: 100%;
+}
+
+.councillor-chart__total {
+  flex: 0 0 30px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
