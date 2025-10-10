@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   DndContext,
   DragOverlay,
@@ -41,10 +41,13 @@ const TOOLTIP_HEIGHT = 20
 const TOOLTIP_SPACING = 4
 
 const App = () => {
-  const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup } = useChartStore()
+  const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup, swapRulingAndOpposition } = useChartStore()
   const [activeId, setActiveId] = useState<PartyId | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
   const [isDraggingFromTooltip, setIsDraggingFromTooltip] = useState<boolean>(false)
+  const [swapState, setSwapState] = useState<'idle' | 'animating' | 'swapped'>('idle')
+  const transitionCountRef = useRef(0)
+  const dataSwappedRef = useRef(false)
 
   // Modifier to offset drag overlay above finger/cursor for compact parties
   const offsetAboveModifier: Modifier = useMemo(
@@ -166,6 +169,36 @@ const App = () => {
   })
 
   const rulingSeats = groups.find((group) => group.id === 'ruling')?.totalSeats ?? 0
+  const oppositionSeats = groups.find((group) => group.id === 'opposition')?.totalSeats ?? 0
+
+  // 与党と野党の議席数を監視し、逆転したらアニメーションをトリガー
+  useEffect(() => {
+    if (swapState === 'idle' && oppositionSeats > rulingSeats) {
+      setSwapState('animating')
+      transitionCountRef.current = 0
+      dataSwappedRef.current = false
+    }
+  }, [rulingSeats, oppositionSeats, swapState])
+
+  // アニメーション完了時のハンドラー
+  const handleTransitionEnd = () => {
+    transitionCountRef.current += 1
+    // 与党と野党の両方のアニメーションが完了したら、データを入れ替える
+    if (transitionCountRef.current >= 2) {
+      // アニメーション終了時点で transform を固定（transition は無効化）
+      setSwapState('swapped')
+      transitionCountRef.current = 0
+      // transition無効のままデータを入れ替え
+      requestAnimationFrame(() => {
+        dataSwappedRef.current = true
+        swapRulingAndOpposition()
+        // 次のフレームでidleに戻す
+        requestAnimationFrame(() => {
+          setSwapState('idle')
+        })
+      })
+    }
+  }
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as PartyId)
@@ -255,20 +288,49 @@ const App = () => {
 
           <main className="app__main">
             <section className="chart" aria-label="政党グループ別議席構成">
-              {groupsWithLayout.map((group) => (
-                <GroupColumn
-                  key={group.id}
-                  groupId={group.id}
-                  groupName={group.name}
-                  totalSeats={group.totalSeats}
-                  parties={group.parties}
-                  segments={group.segments}
-                  stackHeight={stackHeight}
-                  tooltipHeight={TOOLTIP_HEIGHT}
-                  activeParty={activeParty}
-                  overPartyId={overId}
-                />
-              ))}
+              {groupsWithLayout.map((group) => {
+                let transform = ''
+                let className = 'chart__column'
+                let onTransitionEnd: (() => void) | undefined
+
+                // データ入れ替え前のみtransformを適用
+                if ((swapState === 'animating' || swapState === 'swapped') && !dataSwappedRef.current) {
+                  if (group.id === 'ruling') {
+                    transform = 'translateX(calc(100% + var(--column-gap)))'
+                    if (swapState === 'animating') {
+                      onTransitionEnd = handleTransitionEnd
+                    }
+                  } else if (group.id === 'opposition') {
+                    transform = 'translateX(calc(-100% - var(--column-gap)))'
+                    if (swapState === 'animating') {
+                      onTransitionEnd = handleTransitionEnd
+                    }
+                  }
+                }
+
+                // swapped 状態では transition を無効化
+                if (swapState === 'swapped') {
+                  className = 'chart__column chart__column--no-transition'
+                }
+
+                return (
+                  <GroupColumn
+                    key={group.id}
+                    groupId={group.id}
+                    groupName={group.name}
+                    totalSeats={group.totalSeats}
+                    parties={group.parties}
+                    segments={group.segments}
+                    stackHeight={stackHeight}
+                    tooltipHeight={TOOLTIP_HEIGHT}
+                    activeParty={activeParty}
+                    overPartyId={overId}
+                    className={className}
+                    style={{ transform }}
+                    onTransitionEnd={onTransitionEnd}
+                  />
+                )
+              })}
             </section>
           </main>
       </div>

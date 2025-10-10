@@ -104,6 +104,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: transform 0.6s ease-in-out;
+}
+
+.chart__column--no-transition {
+  transition: none !important;
 }
 
 .chart__columnHeader {

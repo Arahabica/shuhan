@@ -5,6 +5,7 @@ interface ChartState {
   groups: Group[]
   movePartyToGroup: (partyId: PartyId, fromGroupId: GroupId, toGroupId: GroupId, index?: number) => void
   reorderPartiesInGroup: (groupId: GroupId, partyIds: PartyId[]) => void
+  swapRulingAndOpposition: () => void
 }
 
 export const useChartStore = create<ChartState>((set) => ({
@@ -42,6 +43,26 @@ export const useChartStore = create<ChartState>((set) => ({
         }
         return group
       })
+      return { groups: newGroups }
+    }),
+
+  swapRulingAndOpposition: () =>
+    set((state) => {
+      const rulingIndex = state.groups.findIndex((g) => g.id === 'ruling')
+      const oppositionIndex = state.groups.findIndex((g) => g.id === 'opposition')
+
+      if (rulingIndex === -1 || oppositionIndex === -1) return state
+
+      const newGroups = [...state.groups]
+
+      // IDと名前を入れ替え
+      const rulingGroup = { ...newGroups[rulingIndex], id: 'opposition' as GroupId, name: '野党' }
+      const oppositionGroup = { ...newGroups[oppositionIndex], id: 'ruling' as GroupId, name: '与党' }
+
+      // 配列内の位置も入れ替え
+      newGroups[rulingIndex] = oppositionGroup
+      newGroups[oppositionIndex] = rulingGroup
+
       return { groups: newGroups }
     }),
 }))

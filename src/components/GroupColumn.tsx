@@ -26,6 +26,9 @@ interface GroupColumnProps {
   tooltipHeight: number
   activeParty: Party | null
   overPartyId: string | null
+  className?: string
+  style?: React.CSSProperties
+  onTransitionEnd?: () => void
 }
 
 export const GroupColumn = ({
@@ -38,6 +41,9 @@ export const GroupColumn = ({
   tooltipHeight,
   activeParty,
   overPartyId,
+  className,
+  style,
+  onTransitionEnd,
 }: GroupColumnProps) => {
   const { setNodeRef } = useDroppable({
     id: groupId,
@@ -49,7 +55,7 @@ export const GroupColumn = ({
   const overPartyInThisGroup = segments.find((s) => s.party.id === overPartyId)
 
   return (
-    <article className="chart__column">
+    <article className={className || 'chart__column'} style={style} onTransitionEnd={onTransitionEnd}>
       <header className="chart__columnHeader">
         <h2 className="chart__columnTitle">{groupName}</h2>
         <span className="chart__columnSeats">{totalSeats} 議席</span>
