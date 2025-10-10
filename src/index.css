@@ -357,6 +357,10 @@ body {
   text-align: center;
 }
 
+.councillor-chart__content {
+  position: relative;
+}
+
 .councillor-chart__row {
   display: flex;
   align-items: center;
@@ -371,8 +375,11 @@ body {
   color: var(--text-secondary);
 }
 
-.councillor-chart__bar {
+.councillor-chart__bar-wrapper {
   flex: 1;
+}
+
+.councillor-chart__bar {
   height: 20px;
   display: flex;
   border-radius: 3px;
@@ -381,6 +388,16 @@ body {
 
 .councillor-chart__segment {
   height: 100%;
+}
+
+.councillor-chart__majority-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed #16a085;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .councillor-chart__total {
