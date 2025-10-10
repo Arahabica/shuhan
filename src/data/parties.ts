@@ -64,7 +64,7 @@ export const parties = [
     id: 'ishi',
     name: '日本維新の会',
     shortName: '維新',
-    seats: 35,
+    seats: 34,
     color: '#6DB33F',
   },
   {
@@ -127,7 +127,7 @@ export const parties = [
     id: 'mu',
     name: '無所属',
     shortName: '無',
-    seats: 5,
+    seats: 6,
     color: '#666666',
   },
 ] satisfies Party[]
