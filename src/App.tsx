@@ -40,14 +40,72 @@ const SEAT_TO_PIXEL = 1.4
 const TOOLTIP_HEIGHT = 20
 const TOOLTIP_SPACING = 4
 
+// クエリパラメータをパースしてGroup配列に変換
+const parseQueryParam = (queryString: string): Group[] | null => {
+  try {
+    const parts = queryString.split(':')
+    if (parts.length !== 3) return null
+
+    const rulingIds = parts[0] ? parts[0].split(',').reverse() : []
+    const oppositionIds = parts[1] ? parts[1].split(',').reverse() : []
+    const othersIds = parts[2] ? parts[2].split(',').reverse() : []
+
+    return [
+      { id: 'ruling', name: '与党', partyIds: rulingIds as PartyId[] },
+      { id: 'opposition', name: '野党', partyIds: oppositionIds as PartyId[] },
+      { id: 'others', name: 'その他', partyIds: othersIds as PartyId[] },
+    ]
+  } catch {
+    return null
+  }
+}
+
+// Group配列をクエリパラメータに変換
+const groupsToQueryParam = (groups: Group[]): string => {
+  const ruling = groups.find((g) => g.id === 'ruling')
+  const opposition = groups.find((g) => g.id === 'opposition')
+  const others = groups.find((g) => g.id === 'others')
+
+  const rulingStr = ruling ? [...ruling.partyIds].reverse().join(',') : ''
+  const oppositionStr = opposition ? [...opposition.partyIds].reverse().join(',') : ''
+  const othersStr = others ? [...others.partyIds].reverse().join(',') : ''
+
+  return `${rulingStr}:${oppositionStr}:${othersStr}`
+}
+
 const App = () => {
-  const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup, swapRulingAndOpposition } = useChartStore()
+  const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup, swapRulingAndOpposition, setGroups } = useChartStore()
   const [activeId, setActiveId] = useState<PartyId | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
   const [isDraggingFromTooltip, setIsDraggingFromTooltip] = useState<boolean>(false)
   const [swapState, setSwapState] = useState<'idle' | 'animating' | 'swapped'>('idle')
   const transitionCountRef = useRef(0)
   const dataSwappedRef = useRef(false)
+  const isInitialLoadRef = useRef(true)
+
+  // 初期ロード時にクエリパラメータから復元
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const partiesParam = params.get('parties')
+
+    if (partiesParam) {
+      const parsedGroups = parseQueryParam(partiesParam)
+      if (parsedGroups) {
+        setGroups(parsedGroups)
+      }
+    }
+
+    isInitialLoadRef.current = false
+  }, [setGroups])
+
+  // groups変更時にURLを更新
+  useEffect(() => {
+    if (isInitialLoadRef.current) return
+
+    const queryParam = groupsToQueryParam(storeGroups)
+    const newUrl = `${window.location.pathname}?parties=${queryParam}`
+    window.history.pushState({}, '', newUrl)
+  }, [storeGroups])
 
   // Modifier to offset drag overlay above finger/cursor for compact parties
   const offsetAboveModifier: Modifier = useMemo(

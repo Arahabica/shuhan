@@ -6,6 +6,7 @@ interface ChartState {
   movePartyToGroup: (partyId: PartyId, fromGroupId: GroupId, toGroupId: GroupId, index?: number) => void
   reorderPartiesInGroup: (groupId: GroupId, partyIds: PartyId[]) => void
   swapRulingAndOpposition: () => void
+  setGroups: (groups: Group[]) => void
 }
 
 export const useChartStore = create<ChartState>((set) => ({
@@ -65,4 +66,6 @@ export const useChartStore = create<ChartState>((set) => ({
 
       return { groups: newGroups }
     }),
+
+  setGroups: (groups) => set({ groups }),
 }))

@@ -4,18 +4,18 @@ export const majorityThreshold = 233 as const
 
 export type PartyId =
   | 'ldp'
-  | 'komeito'
+  | 'kome'
   | 'cdp'
-  | 'ishin'
+  | 'ishi'
   | 'dpp'
-  | 'reiwa'
+  | 'rei'
   | 'jcp'
   | 'sdp'
-  | 'sanseito'
-  | 'japan-conservative'
-  | 'yuushi-kaikaku'
-  | 'genzei'
-  | 'independent'
+  | 'san'
+  | 'hoshu'
+  | 'yuu'
+  | 'gen'
+  | 'mu'
 
 export type GroupId = 'ruling' | 'opposition' | 'others'
 
@@ -42,7 +42,7 @@ export const parties = [
     color: '#E60026',
   },
   {
-    id: 'komeito',
+    id: 'kome',
     name: '公明党',
     shortName: '公明',
     seats: 24,
@@ -56,7 +56,7 @@ export const parties = [
     color: '#004098',
   },
   {
-    id: 'ishin',
+    id: 'ishi',
     name: '日本維新の会',
     shortName: '維新',
     seats: 35,
@@ -70,7 +70,7 @@ export const parties = [
     color: '#00418B',
   },
   {
-    id: 'reiwa',
+    id: 'rei',
     name: 'れいわ新選組',
     shortName: 'れいわ',
     seats: 9,
@@ -91,35 +91,35 @@ export const parties = [
     color: '#1B62B9',
   },
   {
-    id: 'sanseito',
+    id: 'san',
     name: '参政党',
     shortName: '参政',
     seats: 3,
     color: '#F37021',
   },
   {
-    id: 'japan-conservative',
+    id: 'hoshu',
     name: '日本保守党',
     shortName: '保守',
     seats: 1,
     color: '#0F3B63',
   },
   {
-    id: 'yuushi-kaikaku',
+    id: 'yuu',
     name: '有志・改革の会',
     shortName: '有志',
     seats: 7,
     color: '#00A0E9',
   },
   {
-    id: 'genzei',
+    id: 'gen',
     name: '減税保守こども',
     shortName: '減税',
     seats: 2,
     color: '#9B7CB6',
   },
   {
-    id: 'independent',
+    id: 'mu',
     name: '無所属',
     shortName: '無',
     seats: 5,
@@ -141,6 +141,6 @@ export const initialGroups = [
   {
     id: 'others',
     name: 'その他',
-    partyIds: ['komeito', 'ishin', 'dpp', 'reiwa', 'sanseito', 'japan-conservative', 'yuushi-kaikaku', 'genzei', 'independent'],
+    partyIds: ['kome', 'ishi', 'dpp', 'rei', 'san', 'hoshu', 'yuu', 'gen', 'mu'],
   },
 ] satisfies Group[]
