@@ -130,18 +130,7 @@ const App = (): JSX.Element => {
       <div className="app__shell">
         <header className="app__header">
           <div className="header__titles">
-            <p className="header__label">衆議院議席シミュレーター</p>
-            <h1 className="header__headline">過半数ラインまでの距離</h1>
-          </div>
-          <div className="header__summary" role="status" aria-live="polite">
-            <div>
-              <span className="summary__label">与党合計</span>
-              <span className="summary__value">{rulingSeats} 議席</span>
-            </div>
-            <div>
-              <span className="summary__label">過半数まで</span>
-              <span className="summary__value">{seatsToMajority} 議席</span>
-            </div>
+            <h1 className="header__headline">首班指名シミュレータ</h1>
           </div>
         </header>
 
@@ -240,13 +229,6 @@ const App = (): JSX.Element => {
             ))}
           </section>
         </main>
-
-        <footer className="app__footer">
-          <p className="footer__note">
-            現在は表示比率のサンプルです。次のステップでドラッグ&ドロップと詳細機能を加えます。
-          </p>
-          <p className="footer__meta">議席総数 {chamberTotal} ／ 過半数 {majorityThreshold}</p>
-        </footer>
       </div>
     </div>
   )
