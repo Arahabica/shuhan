@@ -153,6 +153,9 @@ const App = () => {
   const minHeight = chamberTotal * SEAT_TO_PIXEL * 0.62
   const stackHeight = Math.max(maxGroupSeats * SEAT_TO_PIXEL, minHeight)
 
+  // 過半数ラインの位置を計算（下からの距離）
+  const majorityLinePosition = majorityThreshold * SEAT_TO_PIXEL
+
   const groupsWithLayout = groups.map((group) => {
     const segments: SegmentLayout[] = group.parties.map((party) => ({
       party,
@@ -375,7 +378,10 @@ const App = () => {
           </header>
 
           <main className="app__main">
-            <section className="chart" aria-label="政党グループ別議席構成">
+            <section className="chart" aria-label="政党グループ別議席構成" style={{ position: 'relative' }}>
+              <div className="majority-line" style={{ bottom: `${majorityLinePosition}px` }}>
+                <span className="majority-line__label">過半数 ({majorityThreshold})</span>
+              </div>
               {groupsWithLayout.map((group) => {
                 let transform = ''
                 let className = 'chart__column'
@@ -430,6 +436,12 @@ const App = () => {
               </button>
             </div>
           </main>
+
+          <footer className="app__footer">
+            <p className="footer__credit">
+              開発者: <a href="https://x.com/Arahabica1" target="_blank" rel="noopener noreferrer" className="footer__link">@Arahabica1</a>
+            </p>
+          </footer>
       </div>
     </div>
 

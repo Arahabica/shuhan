@@ -107,6 +107,29 @@ body {
   gap: var(--column-gap);
   align-items: stretch;
   justify-content: stretch;
+  position: relative;
+}
+
+.majority-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px dashed #16a085;
+  pointer-events: none;
+}
+
+.majority-line__label {
+  position: absolute;
+  right: 0;
+  top: -10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #16a085;
+  background: #ffffff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
 }
 
 .chart__column {
@@ -299,5 +322,25 @@ body {
   width: 18px;
   height: 18px;
   fill: currentColor;
+}
+
+.app__footer {
+  padding: 16px var(--app-padding) 20px;
+  text-align: center;
+}
+
+.footer__credit {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.footer__link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.footer__link:hover {
+  text-decoration: underline;
 }
 
