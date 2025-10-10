@@ -23,8 +23,8 @@ interface SegmentLayout {
 }
 
 const SEAT_TO_PIXEL = 1.4
-const TOOLTIP_HEIGHT = 44
-const TOOLTIP_SPACING = 6
+const TOOLTIP_HEIGHT = 20
+const TOOLTIP_SPACING = 4
 
 const App = (): JSX.Element => {
   const groups = useMemo<GroupWithParties[]>(() => {
@@ -159,10 +159,7 @@ const App = (): JSX.Element => {
                   style={{ height: `${stackHeight}px` }}
                 >
                   <div className="chart__stackColumn chart__stackColumn--bar">
-                    <div
-                      className="chart__stack"
-                      aria-describedby={`${group.id}-description`}
-                    >
+                    <div className="chart__stack">
                       {group.segments.map((segment) => (
                         <div
                           className={`chart__segment${segment.isCompact ? ' chart__segment--compact' : ''}`}
@@ -179,8 +176,8 @@ const App = (): JSX.Element => {
                             </span>
                           ) : (
                             <>
-                              <span className="segment__name">{segment.party.name}</span>
-                              <span className="segment__seats">{segment.party.seats} 議席</span>
+                              <span className="segment__name">{segment.party.shortName}</span>
+                              <span className="segment__seats">{segment.party.seats}</span>
                             </>
                           )}
                         </div>
@@ -192,6 +189,31 @@ const App = (): JSX.Element => {
                     className="chart__stackColumn chart__stackColumn--tooltip"
                     aria-hidden="true"
                   >
+                    <svg
+                      className="chart__connector"
+                      width="100%"
+                      height={stackHeight}
+                    >
+                      {group.segments
+                        .filter(
+                          (segment) => segment.isCompact && segment.tooltipTop != null,
+                        )
+                        .map((segment) => {
+                          const tooltipCenter = segment.tooltipTop! + TOOLTIP_HEIGHT / 2
+                          return (
+                            <line
+                              key={`${group.id}-${segment.party.id}-connector`}
+                              x1="0"
+                              y1={segment.centerFromTop}
+                              x2="12"
+                              y2={tooltipCenter}
+                              stroke="rgba(17, 24, 39, 0.5)"
+                              strokeWidth="1.5"
+                            />
+                          )
+                        })}
+                    </svg>
+
                     <div className="chart__tooltipRail">
                       {group.segments
                         .filter(
@@ -203,20 +225,15 @@ const App = (): JSX.Element => {
                             key={`${group.id}-${segment.party.id}-tooltip`}
                             style={{
                               top: `${segment.tooltipTop}px`,
-                              '--tooltip-connector-offset': `${segment.connectorOffset ?? 0}px`,
                             } as CSSProperties}
                           >
-                            <span className="tooltip__name">{segment.party.name}</span>
-                            <span className="tooltip__seats">{segment.party.seats} 議席</span>
+                            <span className="tooltip__name">{segment.party.shortName}</span>
+                            <span className="tooltip__seats">{segment.party.seats}</span>
                           </div>
                         ))}
                     </div>
                   </div>
                 </div>
-
-                <p id={`${group.id}-description`} className="chart__description">
-                  {group.name}に属する政党の配置エリア。ドラッグ&ドロップで位置を入れ替え予定です。
-                </p>
               </article>
             ))}
           </section>

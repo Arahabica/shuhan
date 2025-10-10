@@ -105,7 +105,7 @@ export const parties = [
   {
     id: 'independent',
     name: '無所属',
-    shortName: '無所属',
+    shortName: '無',
     seats: 12,
     color: '#666666',
   },

@@ -5,19 +5,19 @@
   line-height: 1.5;
 
   --app-max-width: 420px;
-  --app-padding: 16px;
+  --app-padding: 10px;
   --header-bg: #ffffff;
   --page-bg: #eef2f7;
   --text-primary: #122033;
   --text-secondary: #5b6573;
   --accent: #3b82f6;
   --shadow-soft: 0 10px 30px rgba(17, 24, 39, 0.12);
-  --column-gap: 14px;
+  --column-gap: 6px;
   --tooltip-bg: rgba(17, 24, 39, 0.92);
   --tooltip-text: #f8fafc;
-  --tooltip-height: 44px;
-  --bar-width: 54%;
-  --stack-gap: 14px;
+  --tooltip-height: 20px;
+  --bar-width: 44%;
+  --stack-gap: 6px;
 }
 
 *,
@@ -84,15 +84,15 @@ body {
 
 .header__headline {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
 .header__summary {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  padding: 12px;
+  gap: 8px;
+  padding: 10px;
   border-radius: 12px;
   background: rgba(59, 130, 246, 0.08);
 }
@@ -103,12 +103,12 @@ body {
 }
 
 .summary__label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
 }
 
 .summary__value {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
@@ -139,18 +139,18 @@ body {
 
 .chart__columnTitle {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
 }
 
 .chart__columnSeats {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
 }
 
 .chart__stackRow {
   display: flex;
-  gap: var(--stack-gap);
+  gap: calc(var(--stack-gap) * 2);
   height: 100%;
 }
 
@@ -191,17 +191,25 @@ body {
 }
 
 .segment__name {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
 .segment__seats {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
 }
 
 .chart__stackColumn--tooltip {
   flex: 1 1 auto;
-  min-width: 140px;
+  min-width: 0;
+}
+
+.chart__connector {
+  position: absolute;
+  left: calc(-1 * var(--stack-gap) * 2);
+  top: 0;
+  pointer-events: none;
+  overflow: visible;
 }
 
 .chart__tooltipRail {
@@ -212,37 +220,28 @@ body {
 .chart__tooltip {
   position: absolute;
   left: 0;
-  min-width: 120px;
+  min-width: 0;
   height: var(--tooltip-height);
-  padding: 4px 10px;
-  border-radius: 10px;
+  padding: 2px 3px;
+  border-radius: 2px;
   background: var(--tooltip-bg);
   color: var(--tooltip-text);
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-  font-size: 0.8rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
 }
 
-
-.chart__tooltip::before {
-  content: '';
-  position: absolute;
-  width: 12px;
-  height: 1px;
-  background: var(--tooltip-bg);
-  left: -12px;
-  top: calc(50% + var(--tooltip-connector-offset, 0px));
-}
 
 .tooltip__name {
   font-weight: 600;
+  font-size: 0.7rem;
 }
 
 .tooltip__seats {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: rgba(248, 250, 252, 0.8);
 }
 
@@ -281,13 +280,3 @@ body {
   border: 0;
 }
 
-@media (min-width: 480px) {
-  :root {
-    --app-max-width: 460px;
-    --app-padding: 20px;
-  }
-
-  .app__header {
-    padding: 24px var(--app-padding) 18px;
-  }
-}
