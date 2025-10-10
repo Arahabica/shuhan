@@ -1,12 +1,24 @@
-import { useMemo, type CSSProperties } from 'react'
+import { useMemo, useState } from 'react'
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from '@dnd-kit/core'
+import { arrayMove } from '@dnd-kit/sortable'
 import {
   chamberTotal,
-  initialGroups,
   majorityThreshold,
   parties,
   type Group,
   type Party,
+  type PartyId,
 } from './data/parties'
+import { useChartStore } from './store/useChartStore'
+import { GroupColumn } from './components/GroupColumn'
 
 interface GroupWithParties extends Group {
   parties: Party[]
@@ -26,11 +38,24 @@ const SEAT_TO_PIXEL = 1.4
 const TOOLTIP_HEIGHT = 20
 const TOOLTIP_SPACING = 4
 
-const App = (): JSX.Element => {
+const App = () => {
+  const { groups: storeGroups, movePartyToGroup, reorderPartiesInGroup } = useChartStore()
+  const [activeId, setActiveId] = useState<PartyId | null>(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
+  )
+
   const groups = useMemo<GroupWithParties[]>(() => {
     const partyMap = new Map(parties.map((party) => [party.id, party] as const))
 
-    return initialGroups.map((group) => {
+    return storeGroups.map((group) => {
       const groupedParties = group.partyIds
         .map((partyId) => partyMap.get(partyId))
         .filter((party): party is Party => Boolean(party))
@@ -43,7 +68,7 @@ const App = (): JSX.Element => {
         totalSeats,
       }
     })
-  }, [])
+  }, [storeGroups])
 
   const stackHeight = chamberTotal * SEAT_TO_PIXEL * 0.6
 
@@ -123,114 +148,97 @@ const App = (): JSX.Element => {
   })
 
   const rulingSeats = groups.find((group) => group.id === 'ruling')?.totalSeats ?? 0
-  const seatsToMajority = Math.max(majorityThreshold - rulingSeats, 0)
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as PartyId)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveId(null)
+
+    if (!over || active.id === over.id) return
+
+    const activeId = active.id as PartyId
+    const activeGroup = storeGroups.find((g) => g.partyIds.includes(activeId))
+    if (!activeGroup) return
+
+    // Check if over.id is a group ID
+    const overAsGroup = storeGroups.find((g) => g.id === over.id)
+    if (overAsGroup) {
+      // Dropped on empty area of a group - add to the beginning (top)
+      if (activeGroup.id !== overAsGroup.id) {
+        movePartyToGroup(activeId, activeGroup.id, overAsGroup.id, 0)
+      }
+      return
+    }
+
+    // over.id is a party ID
+    const overId = over.id as PartyId
+    const overGroup = storeGroups.find((g) => g.partyIds.includes(overId))
+    if (!overGroup) return
+
+    if (activeGroup.id === overGroup.id) {
+      // Reorder within the same group
+      const oldIndex = activeGroup.partyIds.indexOf(activeId)
+      const newIndex = activeGroup.partyIds.indexOf(overId)
+      const newPartyIds = arrayMove(activeGroup.partyIds, oldIndex, newIndex)
+      reorderPartiesInGroup(activeGroup.id, newPartyIds)
+    } else {
+      // Move to a different group
+      const overIndex = overGroup.partyIds.indexOf(overId)
+      movePartyToGroup(activeId, activeGroup.id, overGroup.id, overIndex)
+    }
+  }
+
+  const activeParty = activeId ? parties.find((p) => p.id === activeId) : null
 
   return (
-    <div className="app">
-      <div className="app__shell">
-        <header className="app__header">
-          <div className="header__titles">
-            <h1 className="header__headline">首班指名シミュレータ</h1>
-          </div>
-        </header>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <div className="app">
+        <div className="app__shell">
+          <header className="app__header">
+            <div className="header__titles">
+              <h1 className="header__headline">首班指名シミュレータ</h1>
+            </div>
+          </header>
 
-        <main className="app__main">
-          <section className="chart" aria-label="政党グループ別議席構成">
-            {groupsWithLayout.map((group) => (
-              <article className="chart__column" key={group.id}>
-                <header className="chart__columnHeader">
-                  <h2 className="chart__columnTitle">{group.name}</h2>
-                  <span className="chart__columnSeats">{group.totalSeats} 議席</span>
-                </header>
-
-                <div
-                  className="chart__stackRow"
-                  style={{ height: `${stackHeight}px` }}
-                >
-                  <div className="chart__stackColumn chart__stackColumn--bar">
-                    <div className="chart__stack">
-                      {group.segments.map((segment) => (
-                        <div
-                          className={`chart__segment${segment.isCompact ? ' chart__segment--compact' : ''}`}
-                          key={segment.party.id}
-                          data-party-id={segment.party.id}
-                          style={{
-                            height: `${segment.height}px`,
-                            backgroundColor: segment.party.color,
-                          }}
-                        >
-                          {segment.isCompact ? (
-                            <span className="sr-only">
-                              {segment.party.name} {segment.party.seats} 議席
-                            </span>
-                          ) : (
-                            <>
-                              <span className="segment__name">{segment.party.shortName}</span>
-                              <span className="segment__seats">{segment.party.seats}</span>
-                            </>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div
-                    className="chart__stackColumn chart__stackColumn--tooltip"
-                    aria-hidden="true"
-                  >
-                    <svg
-                      className="chart__connector"
-                      width="100%"
-                      height={stackHeight}
-                    >
-                      {group.segments
-                        .filter(
-                          (segment) => segment.isCompact && segment.tooltipTop != null,
-                        )
-                        .map((segment) => {
-                          const tooltipCenter = segment.tooltipTop! + TOOLTIP_HEIGHT / 2
-                          return (
-                            <line
-                              key={`${group.id}-${segment.party.id}-connector`}
-                              x1="0"
-                              y1={segment.centerFromTop}
-                              x2="12"
-                              y2={tooltipCenter}
-                              stroke={segment.party.color}
-                              strokeWidth="1.5"
-                              strokeOpacity="0.6"
-                            />
-                          )
-                        })}
-                    </svg>
-
-                    <div className="chart__tooltipRail">
-                      {group.segments
-                        .filter(
-                          (segment) => segment.isCompact && segment.tooltipTop != null,
-                        )
-                        .map((segment) => (
-                          <div
-                            className="chart__tooltip"
-                            key={`${group.id}-${segment.party.id}-tooltip`}
-                            style={{
-                              top: `${segment.tooltipTop}px`,
-                              backgroundColor: segment.party.color,
-                            } as CSSProperties}
-                          >
-                            <span className="tooltip__name">{segment.party.shortName}</span>
-                            <span className="tooltip__seats">{segment.party.seats}</span>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </section>
-        </main>
+          <main className="app__main">
+            <section className="chart" aria-label="政党グループ別議席構成">
+              {groupsWithLayout.map((group) => (
+                <GroupColumn
+                  key={group.id}
+                  groupId={group.id}
+                  groupName={group.name}
+                  totalSeats={group.totalSeats}
+                  parties={group.parties}
+                  segments={group.segments}
+                  stackHeight={stackHeight}
+                  tooltipHeight={TOOLTIP_HEIGHT}
+                />
+              ))}
+            </section>
+          </main>
       </div>
     </div>
+
+    <DragOverlay>
+      {activeParty ? (
+        <div
+          className="chart__segment"
+          style={{
+            width: '60px',
+            height: `${activeParty.seats * SEAT_TO_PIXEL * 0.6}px`,
+            backgroundColor: activeParty.color,
+            opacity: 0.9,
+          }}
+        >
+          <span className="segment__name">{activeParty.shortName}</span>
+          <span className="segment__seats">{activeParty.seats}</span>
+        </div>
+      ) : null}
+    </DragOverlay>
+  </DndContext>
   )
 }
 

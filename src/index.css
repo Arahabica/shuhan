@@ -158,6 +158,13 @@ body {
   padding: 0 6px;
   font-size: 0.8rem;
   letter-spacing: 0.02em;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.chart__segment:active {
+  cursor: grabbing;
 }
 
 .chart__segment--compact {
