@@ -68,7 +68,7 @@ body {
 }
 
 .app__header {
-  padding: 20px var(--app-padding) 16px;
+  padding: 8px var(--app-padding) 16px;
   background: var(--header-bg);
   display: flex;
   flex-direction: column;
@@ -78,20 +78,23 @@ body {
 .header__titles {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .header__headline {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
+  text-align: center;
+  color: #999999;
 }
 
 .header__administration {
   margin: 4px 0 0 0;
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #3b82f6;
+  text-align: center;
 }
 
 .app__main {

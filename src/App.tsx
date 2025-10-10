@@ -299,7 +299,7 @@ const App = () => {
         <div className="app__shell">
           <header className="app__header">
             <div className="header__titles">
-              <h1 className="header__headline">首班指名シミュレータ</h1>
+              <h1 className="header__headline">首班指名シミュレーター</h1>
               {administrationName && <p className="header__administration">{administrationName}</p>}
             </div>
           </header>
