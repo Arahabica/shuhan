@@ -82,6 +82,7 @@ const App = () => {
   const transitionCountRef = useRef(0)
   const dataSwappedRef = useRef(false)
   const isInitialLoadRef = useRef(true)
+  const hasUserInteractedRef = useRef(false)
 
   // 初期ロード時にクエリパラメータから復元
   useEffect(() => {
@@ -98,9 +99,10 @@ const App = () => {
     isInitialLoadRef.current = false
   }, [setGroups])
 
-  // groups変更時にURLを更新
+  // groups変更時にURLを更新（ユーザーが操作した後のみ）
   useEffect(() => {
     if (isInitialLoadRef.current) return
+    if (!hasUserInteractedRef.current) return
 
     const queryParam = groupsToQueryParam(storeGroups)
     const newUrl = `${window.location.pathname}?parties=${queryParam}`
@@ -328,6 +330,7 @@ const App = () => {
         // Different group - move to the beginning (top)
         movePartyToGroup(activeId, activeGroup.id, overAsGroup.id, 0)
       }
+      hasUserInteractedRef.current = true
       return
     }
 
@@ -347,6 +350,8 @@ const App = () => {
       const overIndex = overGroup.partyIds.indexOf(overId)
       movePartyToGroup(activeId, activeGroup.id, overGroup.id, overIndex)
     }
+
+    hasUserInteractedRef.current = true
   }
 
   const activeParty = activeId ? parties.find((p) => p.id === activeId) ?? null : null
