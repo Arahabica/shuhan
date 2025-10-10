@@ -20,6 +20,12 @@
   --stack-gap: 6px;
 }
 
+@media screen and (max-width: 378px) {
+  :root { 
+    --app-padding: 4px;
+  }
+}
+
 *,
 *::before,
 *::after {
@@ -170,7 +176,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 2px;
   height: 100%;
 }
 
