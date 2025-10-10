@@ -428,6 +428,8 @@ const App = () => {
               })}
             </section>
 
+            <CouncillorChart />
+
             <div className="share-section">
               <button className="share-button" onClick={shareToX} type="button">
                 <svg className="share-button__icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -436,8 +438,6 @@ const App = () => {
                 結果をシェア
               </button>
             </div>
-
-            <CouncillorChart />
           </main>
 
           <footer className="app__footer">
