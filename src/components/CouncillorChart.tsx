@@ -42,7 +42,7 @@ export const CouncillorChart = () => {
           <div className="councillor-chart__label">与党</div>
           <div className="councillor-chart__bar-wrapper">
             <div className="councillor-chart__bar">
-              {rulingGroup.parties.map((party) => (
+              {rulingGroup.parties.slice().reverse().map((party) => (
                 <div
                   key={party.id}
                   className="councillor-chart__segment"
@@ -61,7 +61,7 @@ export const CouncillorChart = () => {
           <div className="councillor-chart__label">野党</div>
           <div className="councillor-chart__bar-wrapper">
             <div className="councillor-chart__bar">
-              {oppositionGroup.parties.map((party) => (
+              {oppositionGroup.parties.slice().reverse().map((party) => (
                 <div
                   key={party.id}
                   className="councillor-chart__segment"
