@@ -151,7 +151,7 @@ const App = () => {
   }, [storeGroups])
 
   const maxGroupSeats = Math.max(...groups.map((g) => g.totalSeats))
-  const minHeight = chamberTotal * SEAT_TO_PIXEL * 0.62
+  const minHeight = chamberTotal * SEAT_TO_PIXEL * 0.5 + 32
   const stackHeight = Math.max(maxGroupSeats * SEAT_TO_PIXEL, minHeight)
 
   // 過半数ラインの位置を計算（下からの距離）

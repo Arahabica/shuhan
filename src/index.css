@@ -68,7 +68,7 @@ body {
 }
 
 .app__header {
-  padding: 8px var(--app-padding) 16px;
+  padding: 8px var(--app-padding) 4px;
   background: var(--header-bg);
   display: flex;
   flex-direction: column;
@@ -345,7 +345,7 @@ body {
 }
 
 .councillor-chart {
-  margin-top: 48px;
+  margin-top: 16px;
   padding: 0 var(--app-padding);
 }
 
